@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Original full-resolution photos pulled from the old Wix site.
+# Kept for reference; the web-optimised versions live in public/images.
+/source-photos/

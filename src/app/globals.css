@@ -1,26 +1,239 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   Design tokens
+   The palette is deliberately narrow: a warm white canvas, two sand/taupe
+   neutrals for structure, and a soft dark brown for text. Colour carries
+   hierarchy, never decoration.
+--------------------------------------------------------------------------- */
+@theme {
+  --color-cream: #fcfbf9;
+  --color-sand: #eee6dd;
+  --color-taupe: #cbb8a6;
+  --color-ink: #352e2b;
+  --color-onyx: #111111;
+
+  /* Derived surfaces — kept as tokens so components never hand-roll opacity. */
+  --color-line: #e4dbd1;
+  --color-line-soft: #efe9e2;
+
+  /* Text colours are picked for contrast against the cream canvas, not by eye:
+     --color-muted  5.4:1  — AA at any size, on cream and on the sand cards
+     --color-accent 3.5:1  — passes AA for large text only (24px and up), used
+                             for the italic display accents
+     --color-taupe  1.9:1  — decorative only: hairlines, rules, and type on the
+                             dark brown sections, where it reaches 6.9:1. Never
+                             use it for text on cream. */
+  --color-muted: #736558;
+  --color-accent: #9c8168;
+
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Editorial radii — generous, but never pill-shaped on large surfaces. */
+  --radius-card: 1.5rem;
+  --radius-image: 2rem;
+
+  /* One shared easing curve keeps every transition on the site related. */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* ---------------------------------------------------------------------------
+   Base
+--------------------------------------------------------------------------- */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: light;
+    scroll-behavior: smooth;
+    /* Header height, used to offset in-page anchor targets. */
+    --header-h: 4.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --header-h: 5.5rem;
+    }
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Anchor targets clear the sticky header. */
+  [id] {
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  ::selection {
+    background-color: var(--color-sand);
+    color: var(--color-ink);
+  }
+
+  /* A single, consistent focus ring across every interactive element. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------------------------------------------------------
+   Utilities
+--------------------------------------------------------------------------- */
+
+/* Cormorant runs light and wide; this tunes it for large display use. */
+@utility font-display {
+  font-family: var(--font-display);
+  font-feature-settings: "liga" 1, "kern" 1;
+  letter-spacing: -0.015em;
+}
+
+/* Uppercase micro-label used for eyebrows, table heads and nav overlines. */
+@utility label-xs {
+  font-size: 0.6875rem;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Fine hairline used to structure the page instead of boxes everywhere. */
+@utility rule {
+  border-top: 1px solid var(--color-line-soft);
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+   Every animation is opt-out-able. Users who ask their OS for less motion get
+   the final state immediately, with no transform and no delay.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero entrance
+   The hero is animated with CSS rather than JavaScript on purpose. It is the
+   most important thing on the site, and a CSS animation with `fill-mode: both`
+   can never leave it stuck invisible — if the animation is disabled, blocked or
+   never starts, the element still resolves to its final, visible state.
+--------------------------------------------------------------------------- */
+@keyframes rise-in {
+  from {
+    transform: translate3d(0, 105%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    transform: translate3d(0, 14px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes settle-in {
+  from {
+    transform: scale(1.04);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-rise-in {
+  animation: rise-in 0.9s var(--ease-soft) both;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.8s var(--ease-soft) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.9s var(--ease-soft) both;
+}
+
+.animate-settle-in {
+  animation: settle-in 1.2s var(--ease-soft) both;
+}
+
+/* Radix accordion open/close, driven by the measured content height. */
+@keyframes acc-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes acc-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* The slow horizontal drift used by the Instagram strip. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 70s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none !important;
+  }
 }

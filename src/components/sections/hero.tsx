@@ -6,11 +6,10 @@ import { BookButton } from "@/components/ui/book-button";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/section";
 import { imgProps } from "@/lib/images";
-import { reviews } from "@/lib/site";
 
 /** Three facts that answer "is this for me?" before the visitor scrolls. */
 const heroFacts = [
-  { value: "4–6", label: "weken mooi" },
+  { value: "3–5", label: "weken mooi" },
   { value: "2023", label: "gecertificeerd BIAB" },
   { value: "1-op-1", label: "salon aan huis" },
 ];
@@ -37,9 +36,20 @@ export function Hero() {
       />
 
       <Container className="relative">
-        <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10 xl:gap-16">
+        {/*
+          Three children, laid out as two rows on desktop: the type and the proof
+          strip stack in the left column while the photograph spans both on the
+          right.
+
+          The point of the split is the phone. With the proof strip inside the
+          type block, a visitor had to scroll past three statistics before seeing
+          a single nail — on a site whose whole promise is the work. Now the
+          photograph follows straight after the buttons, and the numbers come
+          after it.
+        */}
+        <div className="grid items-center gap-x-10 gap-y-12 lg:grid-cols-12 xl:gap-x-16">
           {/* Type ---------------------------------------------------------- */}
-          <div className="lg:col-span-6">
+          <div className="lg:col-span-6 lg:row-start-1">
             <p
               className="label-xs flex animate-fade-in items-center gap-3 text-muted"
               style={{ animationDelay: "100ms" }}
@@ -72,61 +82,53 @@ export function Hero() {
                 <Link href="/behandelingen">Bekijk behandelingen</Link>
               </Button>
             </div>
-
-            {/* Proof strip ------------------------------------------------- */}
-            <dl
-              className="mt-12 grid max-w-md animate-fade-in grid-cols-3 gap-6 border-t border-line-soft pt-7"
-              style={{ animationDelay: "1000ms" }}
-            >
-              {heroFacts.map((fact) => (
-                <div key={fact.label}>
-                  <dt className="sr-only">{fact.label}</dt>
-                  <dd>
-                    <span className="font-display block text-[1.75rem] leading-none font-light">
-                      {fact.value}
-                    </span>
-                    <span className="mt-2 block text-xs leading-snug text-muted">
-                      {fact.label}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
           </div>
 
           {/* Photograph ---------------------------------------------------- */}
           <div
-            className="relative animate-settle-in lg:col-span-5 lg:col-start-8"
+            className="relative animate-settle-in lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1 lg:self-center"
             style={{ animationDelay: "200ms" }}
           >
-            {/* The portrait is 876x1110 (0.79), so a 4:5 frame crops almost
-                nothing — Lynn stays centred at every breakpoint. */}
+            {/* A finished set, not a portrait — this is the first thing a visitor
+                should judge the salon on.
+
+                Chosen for tone as much as for the work: a warm off-white wall and
+                a pale french set sit inside the sand-and-taupe palette, where a
+                darker, moodier shot fought it. The file is 950x1800, so the 4:5
+                frame crops top and bottom and leaves the hand centred.
+
+                Lynn is supplying new hero photography; swap the key below and
+                nothing else needs to change. */}
             <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-image)] bg-sand">
               <Image
-                {...imgProps("lynn-portret")}
+                {...imgProps("biab-soft-french")}
                 priority
                 fetchPriority="high"
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="size-full object-cover"
               />
             </div>
-
-            {/* Floating card — the one place on the page where a card overlaps
-                a photo. It carries the proof that matters most. */}
-            <figure
-              // Sits further out at lg, where the image column is narrowest, so
-              // the card never swallows the portrait.
-              className="absolute -bottom-6 left-4 max-w-[17rem] animate-fade-up rounded-[var(--radius-card)] bg-cream/95 p-6 shadow-[0_24px_60px_-24px_rgba(53,46,43,0.35)] backdrop-blur-sm sm:left-6 lg:-bottom-10 lg:-left-20 xl:-left-8"
-              style={{ animationDelay: "1100ms" }}
-            >
-              <blockquote className="font-display text-[1.0625rem] leading-snug">
-                &ldquo;{reviews[0].quote}&rdquo;
-              </blockquote>
-              <figcaption className="label-xs mt-4 text-muted">
-                {reviews[0].author} &middot; klant
-              </figcaption>
-            </figure>
           </div>
+
+          {/* Proof strip ----------------------------------------------------- */}
+          <dl
+            className="grid max-w-md animate-fade-in grid-cols-3 gap-6 border-t border-line-soft pt-7 lg:col-span-6 lg:col-start-1 lg:row-start-2"
+            style={{ animationDelay: "1000ms" }}
+          >
+            {heroFacts.map((fact) => (
+              <div key={fact.label}>
+                <dt className="sr-only">{fact.label}</dt>
+                <dd>
+                  <span className="font-display block text-[1.75rem] leading-none font-light">
+                    {fact.value}
+                  </span>
+                  <span className="mt-2 block text-xs leading-snug text-muted">
+                    {fact.label}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </Container>
     </section>

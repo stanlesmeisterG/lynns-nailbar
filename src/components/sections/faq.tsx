@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/accordion";
 import { BookLink } from "@/components/ui/book-button";
 import { Reveal } from "@/components/ui/reveal";
-import { Container, Section } from "@/components/ui/section";
+import { Container, Eyebrow, Section } from "@/components/ui/section";
 import { contact, faq } from "@/lib/site";
 
 /**
@@ -15,6 +15,9 @@ import { contact, faq } from "@/lib/site";
  * Every answer here comes from the salon's real information and house rules, so
  * this section does double duty: it removes the last objections before booking,
  * and it saves Lynn from answering the same DMs every week.
+ *
+ * Lives on /behandelingen since Sept 2026 — it sits where the visitor is actually
+ * deciding, next to what each treatment costs.
  */
 export function Faq() {
   return (
@@ -25,11 +28,7 @@ export function Faq() {
               while the visitor works down a long list of questions. */}
           <Reveal className="lg:col-span-4">
             <div className="lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
-              <p className="label-xs flex items-center gap-3 text-muted">
-                <span className="tabular-nums text-ink">06</span>
-                <span aria-hidden className="h-px w-6 bg-line" />
-                <span>Veelgestelde vragen</span>
-              </p>
+              <Eyebrow>Veelgestelde vragen</Eyebrow>
               <h2 className="font-display mt-7 text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] font-light">
                 Goed om
                 <br />

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { contact, faq, links, priceGroups, site } from "./site";
+import { contact, extraPrices, faq, links, site, treatments } from "./site";
 
 /** Absolute URL helper — schema.org and Open Graph both need fully-qualified URLs. */
 export function absoluteUrl(path = "/") {
@@ -97,18 +97,48 @@ export function localBusinessSchema() {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Behandelingen",
-      itemListElement: priceGroups.map((group) => ({
-        "@type": "OfferCatalog",
-        name: group.title,
-        itemListElement: group.rows.map((row) => ({
-          "@type": "Offer",
-          priceCurrency: "EUR",
-          // "€ 42,50" -> "42.50"; the "+ € 5,00" surcharge row parses the same way.
-          price: row.price.replace(/[^\d,]/g, "").replace(",", "."),
-          itemOffered: { "@type": "Service", name: row.name },
+      itemListElement: [
+        {
+          "@type": "OfferCatalog",
+          name: "Behandelingen",
+          itemListElement: treatments.map((treatment) =>
+            offer(treatment.name, treatment.price, treatment.description),
+          ),
+        },
+        ...extraPrices.map((group) => ({
+          "@type": "OfferCatalog",
+          name: group.title,
+          itemListElement: group.rows.map((row) =>
+            offer(row.name, row.price, row.description),
+          ),
         })),
-      })),
+      ],
     },
+  };
+}
+
+/**
+ * One Offer in the catalog.
+ *
+ * `price` is omitted rather than guessed when the site shows something that isn't
+ * a number — "Op aanvraag", "Inbegrepen", or a per-nail rate. Publishing a made-up
+ * figure in structured data is worse than publishing none: Google may surface it.
+ */
+function offer(name: string, price: string, description?: string) {
+  const digits = price.replace(/[^\d,]/g, "").replace(",", ".");
+  const isSingleAmount = /^\d+(\.\d{1,2})?$/.test(digits);
+  const perNail = price.includes("p/n");
+
+  return {
+    "@type": "Offer",
+    itemOffered: {
+      "@type": "Service",
+      name,
+      ...(description ? { description } : {}),
+    },
+    ...(isSingleAmount && !perNail
+      ? { priceCurrency: "EUR", price: digits }
+      : {}),
   };
 }
 

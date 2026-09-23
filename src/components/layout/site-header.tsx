@@ -30,8 +30,14 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close the panel on navigation, and lock the page behind it while open.
-  React.useEffect(() => setMenuOpen(false), [pathname]);
+  // Close the panel on navigation. Adjusting state during render rather than in
+  // an effect: the menu is then already closed in the same pass that paints the
+  // new route, instead of flashing open for a frame and closing after.
+  const [routeAtOpen, setRouteAtOpen] = React.useState(pathname);
+  if (pathname !== routeAtOpen) {
+    setRouteAtOpen(pathname);
+    setMenuOpen(false);
+  }
 
   React.useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";

@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, Star } from "lucide-react";
 import * as React from "react";
 
 import { Reveal } from "@/components/ui/reveal";
-import { Container, Section } from "@/components/ui/section";
+import { Container, Eyebrow, Section } from "@/components/ui/section";
 import { reviews } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,9 @@ import { cn } from "@/lib/utils";
  * The slide is announced politely to screen readers, and the whole set is also
  * rendered into the DOM for them via a visually hidden list, so no review is
  * reachable only by clicking.
+ *
+ * Lives on /over-de-salon since Sept 2026. The home page carries a single quote
+ * instead (see `FeaturedReview`) — Lynn wanted one review there, not four.
  */
 export function Reviews() {
   const [index, setIndex] = React.useState(0);
@@ -39,11 +42,7 @@ export function Reviews() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-4">
-            <p className="label-xs flex items-center gap-3 text-muted">
-              <span className="tabular-nums text-ink">05</span>
-              <span aria-hidden className="h-px w-6 bg-line" />
-              <span>Reviews</span>
-            </p>
+            <Eyebrow>Reviews</Eyebrow>
             <h2 className="font-display mt-7 text-[clamp(2.25rem,5vw,3.5rem)] leading-[1.05] font-light">
               Wat klanten
               <br />
@@ -70,7 +69,12 @@ export function Reviews() {
 
           <Reveal delay={0.1} className="lg:col-span-8">
             <figure className="flex min-h-[19rem] flex-col justify-between md:min-h-[17rem]">
-              <div className="relative flex-1">
+              {/* overflow-x-clip contains the slide: the quote enters from 28px
+                  off to one side, which otherwise widens the document and lets a
+                  phone scroll sideways for the length of the animation. `clip`
+                  rather than `hidden` so the y axis stays visible and no vertical
+                  scrollbar appears. */}
+              <div className="relative flex-1 overflow-x-clip">
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.blockquote
                     key={index}
@@ -87,9 +91,13 @@ export function Reviews() {
                     <p className="font-display text-[clamp(1.5rem,3.2vw,2.375rem)] leading-[1.3] font-light">
                       &ldquo;{current.quote}&rdquo;
                     </p>
-                    <figcaption className="label-xs mt-8 text-muted">
-                      {current.author}
-                    </figcaption>
+                    {/* Only rendered once a customer has agreed to be named —
+                        the old initials ("S. V.") were removed at Lynn's request. */}
+                    {current.name ? (
+                      <figcaption className="label-xs mt-8 text-muted">
+                        {current.name}
+                      </figcaption>
+                    ) : null}
                   </motion.blockquote>
                 </AnimatePresence>
               </div>
@@ -98,7 +106,7 @@ export function Reviews() {
               <div className="mt-10 flex items-center justify-between border-t border-line pt-6">
                 <ol className="flex items-center gap-2" aria-label="Ga naar review">
                   {reviews.map((review, i) => (
-                    <li key={review.author}>
+                    <li key={review.quote.slice(0, 24)}>
                       <button
                         type="button"
                         onClick={() => {
@@ -138,9 +146,8 @@ export function Reviews() {
         {/* Every review in the DOM for assistive tech and for crawlers. */}
         <ul className="sr-only">
           {reviews.map((review) => (
-            <li key={`sr-${review.author}`}>
+            <li key={`sr-${review.quote.slice(0, 24)}`}>
               <blockquote>{review.quote}</blockquote>
-              <span>{review.author}</span>
             </li>
           ))}
         </ul>

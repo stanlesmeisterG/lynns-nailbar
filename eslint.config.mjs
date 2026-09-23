@@ -1,17 +1,13 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+import typescript from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// eslint-config-next 15 ships as an eslintrc-style config, so it is bridged
-// into flat config here rather than imported directly.
-const compat = new FlatCompat({ baseDirectory: __dirname });
-
+// As of eslint-config-next 16 these ship as flat config arrays and are imported
+// directly. The previous FlatCompat bridge was for the eslintrc-style config in
+// 15.x; running it against 16 throws on a circular reference.
 const eslintConfig = [
   { ignores: [".next/**", "out/**", "build/**", "next-env.d.ts"] },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...coreWebVitals,
+  ...typescript,
   {
     rules: {
       // Every <Image> on this site takes its alt from the generated manifest

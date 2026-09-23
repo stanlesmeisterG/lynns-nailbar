@@ -37,7 +37,7 @@ export default function ContactPage() {
             <span className="text-accent italic">de salon.</span>
           </>
         }
-        lede="De salon zit aan de Molenveldlaan in Nijmegen. Je wordt persoonlijk ontvangen, dus kom op de afgesproken tijd — dan is er alle rust voor jouw behandeling."
+        lede="Je vindt me aan de Molenveldlaan in Nijmegen. Ik ontvang je persoonlijk, dus kom op de afgesproken tijd — dan hebben we alle rust voor jouw behandeling."
       />
 
       <Section space="tight" className="pt-0">
@@ -184,6 +184,8 @@ export default function ContactPage() {
       </Section>
 
       {/* Closing image ------------------------------------------------------ */}
+      {/* The last photo still from the old shoot. /over-de-salon now carries the
+          new one of Lynn in the salon; this band could use a new wide shot. */}
       <Section space="tight" className="pt-0">
         <Container>
           <Reveal>

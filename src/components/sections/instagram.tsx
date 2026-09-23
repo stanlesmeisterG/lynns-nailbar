@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
-import { Container, Section } from "@/components/ui/section";
+import { Container, Eyebrow, Section } from "@/components/ui/section";
 import { img } from "@/lib/images";
 import { instagramStrip, links } from "@/lib/site";
 
@@ -24,11 +24,7 @@ export function Instagram() {
       <Container>
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <p className="label-xs flex items-center gap-3 text-muted">
-              <span className="tabular-nums text-ink">07</span>
-              <span aria-hidden className="h-px w-6 bg-line" />
-              <span>Instagram</span>
-            </p>
+            <Eyebrow>Instagram</Eyebrow>
             <h2 className="font-display mt-7 text-[clamp(2rem,4.5vw,3.25rem)] leading-[1.05] font-light">
               Doe inspiratie op
             </h2>

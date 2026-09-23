@@ -59,7 +59,7 @@ export const openingHours: { day: string; hours: string | null }[] = [];
 
 export const availabilityNote = {
   heading: "Uitsluitend op afspraak",
-  body: "Lynn werkt met ruime tijdsloten, zodat er nooit gehaast wordt. De actuele beschikbare dagen en tijden staan altijd in de online agenda.",
+  body: "Ik werk met ruime tijdsloten, zodat er nooit gehaast hoeft te worden. De dagen en tijden die nog vrij zijn staan altijd in de online agenda.",
   /** Shown on the price list — the salon's own notice. */
   notice:
     "LET OP: Alleen vaste klanten kunnen momenteel een afspraak inplannen!",
@@ -71,9 +71,8 @@ export const availabilityNote = {
 
 export const navigation = [
   { label: "Behandelingen", href: "/behandelingen" },
-  { label: "Prijslijst", href: "/prijslijst" },
-  { label: "Gallerij", href: "/gallerij" },
-  { label: "Over Lynn", href: "/over-lynn" },
+  { label: "Galerij", href: "/galerij" },
+  { label: "Over de salon", href: "/over-de-salon" },
   { label: "Contact", href: "/contact" },
 ] as const;
 
@@ -89,9 +88,17 @@ export type Treatment = {
   kicker: string;
   /** Full description — the salon's own wording where it exists. */
   description: string;
+  /** Optional second paragraph, for a variant that needs explaining on its own. */
+  extra?: string;
   benefits: string[];
-  /** Formatted price of the entry-level variant, e.g. "vanaf € 42,50". */
-  priceFrom: string;
+  /** What the card leads with, e.g. "€ 35,00" or "vanaf € 45,00". */
+  price: string;
+  /**
+   * Set when a treatment has more than one tariff. Rendered as a small table
+   * inside the treatment itself, so the prices stay next to what they buy and
+   * there is no second price list further down the page.
+   */
+  variants?: { name: string; price: string }[];
   /**
    * Indicative appointment length. These were NOT published on the old site;
    * they are sensible estimates for the treatment and still need confirming.
@@ -99,7 +106,10 @@ export type Treatment = {
   duration: string;
   durationIsEstimate: true;
   image: ImageKey;
-  /** Extra photos used on the treatments page. */
+  /**
+   * Photos shown in the swipeable strip under the main image. Lynn's newest work
+   * leads each strip, with the older shoot behind it.
+   */
   gallery: ImageKey[];
 };
 
@@ -109,54 +119,89 @@ export const treatments: Treatment[] = [
     name: "BIAB",
     kicker: "Builder In A Bottle",
     description:
-      "Builder In A Bottle is de perfecte keuze voor sterke en langdurige nagels. Deze flexibele builder biedt stevigheid en heeft een natuurlijke look, ideaal voor iedereen die houdt van mooie en gezonde nagels. BIAB is ideaal voor korte tot medium lange nagels en helpt je nagels op een natuurlijke manier te laten groeien.",
+      "BIAB is een builder gel die de natuurlijke nagel helpt bij de groei en extra stevigheid geeft aan broze nagels. De flexibele formule voorkomt breken en blijft gemiddeld 3 tot 5 weken mooi zitten, afhankelijk van je nagelconditie en dagelijkse bezigheden. Met keuze uit verschillende nude-tinten is deze behandeling ideaal voor wie sterke, gezonde en verzorgde nagels wil met een natuurlijke uitstraling.",
+    extra:
+      "De behandeling Herstel & Versterk is er voor wie geen zichtbare kunstnagels wil, maar wel sterkere en langere nagels. Ik breng dan een transparante BIAB-laag aan, afgewerkt met een matte topcoat, voor een zo natuurlijk mogelijke look. Ideaal voor nagelbijters, of als je nagels uit zichzelf moeilijk lang worden.",
     benefits: [
-      "Blijft 4 tot 6 weken mooi zitten",
-      "Laat je eigen nagel op een natuurlijke manier doorgroeien",
-      "Bij regelmatig gebruik ontstaat een c-curve: steviger en slanker",
-      "Vegan, cruelty-free en vrij van schadelijke stoffen",
+      "Blijft gemiddeld 3 tot 5 weken mooi zitten",
+      "Geeft broze nagels stevigheid en voorkomt breken",
+      "Keuze uit verschillende nude-tinten",
+      "Gezet met The Gel Bottle, het officiële BIAB-merk",
     ],
-    priceFrom: "vanaf € 37,50",
+    price: "vanaf € 45,00",
+    variants: [
+      { name: "BIAB naturel", price: "€ 45,00" },
+      { name: "BIAB babyboom", price: "€ 50,00" },
+      { name: "BIAB met gellak", price: "€ 50,00" },
+      { name: "BIAB herstel & versterk", price: "€ 40,00" },
+    ],
     duration: "ca. 75 min",
     durationIsEstimate: true,
-    image: "biab-soft-french",
-    gallery: ["biab-mocha-parelmoer", "biab-babyboom", "biab-naturel-roze"],
+    // The hero carries biab-soft-french, so BIAB leads with a different set here.
+    image: "biab-mocha-parelmoer",
+    gallery: [
+      "biab-parelmoer-zwartwit",
+      "biab-soft-french",
+      "biab-babyboom",
+      "biab-naturel-roze",
+      "biab-parelmoer",
+      "biab-mocha-naturel",
+      "biab-naturel-daglicht",
+      "biab-roze-parelmoer",
+    ],
   },
   {
     slug: "gellak",
     name: "Gellak",
     kicker: "Kleur die weken blijft",
     description:
-      "Gellak geeft je nagels een mooie kleur en een glans die wekenlang blijft zitten. Kies uit talloze trendy tinten en geniet van perfect gelakte nagels — van een stille nude tot een diep bordeaux.",
+      "Gellak is dunner dan een builder gel, maar dikker dan gewone nagellak. De gelachtige formule geeft extra stevigheid en blijft gemiddeld 3 tot 4 weken mooi zitten, afhankelijk van je nagelconditie en dagelijkse bezigheden. Gellak gaat over BIAB of over een rubber base en hardt uit onder een LED-lamp. Met keuze uit talloze kleuren is dit de behandeling voor wie kleurrijke en verzorgde nagels wil.",
     benefits: [
+      "Blijft gemiddeld 3 tot 4 weken mooi zitten",
       "Direct droog, dus geen wachttijd na de afspraak",
-      "Houdt zijn hoogglans, ook na afwassen en douchen",
-      "Ruime keuze uit trendy en klassieke tinten",
+      "Keuze uit talloze kleuren, van stille nude tot diep bordeaux",
       "Netjes afgewerkte nagelriemen als onderdeel van de behandeling",
     ],
-    priceFrom: "€ 32,50",
+    price: "€ 35,00",
     duration: "ca. 60 min",
     durationIsEstimate: true,
-    image: "gellak-donkerrood",
-    gallery: ["gellak-rose-chrome", "gellak-aubergine-chrome", "gellak-pastelgeel"],
+    image: "gellak-dieprood",
+    gallery: [
+      "gellak-geel-french",
+      "gellak-donkerrood",
+      "gellak-rose-chrome",
+      "gellak-aubergine-chrome",
+      "gellak-pastelgeel",
+      "gellak-kersenrood",
+      "gellak-fuchsia",
+    ],
   },
   {
     slug: "nail-art",
     name: "Nail art",
     kicker: "Van subtiel tot opvallend",
     description:
-      "Van subtiele details naar een opvallend design — in de salon is beide mogelijk. Denk aan een fijn hartje op één nagel, french nails in elke kleur die je maar wilt, of trendy leopard nails. Alles wordt met de hand geschilderd tijdens je afspraak.",
+      "Van een subtiel detail tot een volledig ontwerp: alles wordt tijdens je afspraak met de hand geschilderd. De prijs hangt af van hoeveel werk een design kost, en loopt per nagel — zo betaal je ook alleen voor de nagels die je laat doen.",
     benefits: [
       "Handgeschilderd, volledig afgestemd op jouw smaak",
-      "Level 1 vanaf € 0,50 per nagel, level 2 vanaf € 1,00 per nagel",
+      "Level 1 € 0,50 per nagel, level 2 € 1,00 per nagel",
       "Ook mogelijk op één of twee accentnagels",
-      "Parelmoerpoeder over alle nagels voor € 3,00",
+      "Chrome als finishing touch, € 3,00 over de hele set",
     ],
-    priceFrom: "vanaf € 0,50 p/n",
+    price: "vanaf € 0,50 p/n",
     duration: "reken op 15–30 min extra",
     durationIsEstimate: true,
-    image: "nailart-bordeaux-french",
-    gallery: ["nailart-bloemen", "nailart-pastel-french", "nailart-bordeaux-mix"],
+    image: "nailart-bordeaux-stippen",
+    gallery: [
+      "nailart-roze-bloemetjes",
+      "nailart-swirls-kleur",
+      "nailart-stippen-french",
+      "nailart-roze-kusjes",
+      "nailart-bordeaux-french",
+      "nailart-bloemen",
+      "nailart-pastel-french",
+      "nailart-bordeaux-mix",
+    ],
   },
 ];
 
@@ -164,65 +209,68 @@ export const treatments: Treatment[] = [
 /* Price list — exactly as published by the salon                              */
 /* -------------------------------------------------------------------------- */
 
-export type PriceRow = { name: string; price: string; note?: string };
+export type PriceRow = {
+  name: string;
+  price: string;
+  note?: string;
+  description?: string;
+};
 export type PriceGroup = {
   title: string;
   intro?: string;
   rows: PriceRow[];
 };
 
-export const priceGroups: PriceGroup[] = [
+/**
+ * Add-ons and aftercare only.
+ *
+ * The three main treatment prices are NOT repeated here — they sit with the
+ * treatment itself on /behandelingen. Lynn asked for one price per thing and no
+ * second table saying the same, so this covers what the treatment bands don't.
+ */
+export const extraPrices: PriceGroup[] = [
   {
-    title: "BIAB behandelingen",
+    title: "Extra's",
     intro:
-      "Een volledige behandeling, inclusief het in model vijlen van je nagels en het verzorgen van je nagelriemen.",
+      "Te combineren met elke behandeling. Geef je wens door bij het boeken, dan plan ik er extra tijd voor in.",
     rows: [
-      { name: "BIAB naturel", price: "€ 42,50" },
-      { name: "BIAB babyboom", price: "€ 47,50" },
-      { name: "BIAB met gellak", price: "€ 47,50" },
-      { name: "BIAB herstel & versterk", price: "€ 37,50" },
-    ],
-  },
-  {
-    title: "Gellak behandelingen",
-    rows: [{ name: "Gellak", price: "€ 32,50" }],
-  },
-  {
-    title: "Nail art",
-    intro:
-      "De prijsklasse hangt af van de complexiteit van het ontwerp. Geef je wens vooraf door, dan wordt er extra tijd ingepland.",
-    rows: [
-      { name: "Nail art level 1", price: "€ 0,50", note: "per nagel" },
-      { name: "Nail art level 2", price: "€ 1,00", note: "per nagel" },
-      { name: "Parelmoerpoeder", price: "€ 3,00", note: "alle nagels" },
+      {
+        name: "Chrome",
+        price: "€ 3,00",
+        note: "hele set",
+        description:
+          "Chromepoeder kan in verschillende kleuren, zoals Iced, Copper en Pearl. Met Iced — ook wel parelmoer — maak je elke kleur nóg glanzender. Een echte finishing touch.",
+      },
     ],
   },
   {
     title: "Verwijderen",
     rows: [
-      { name: "Set verwijderen", price: "€ 10,00" },
       { name: "BIAB verwijderen", price: "€ 10,00" },
-      { name: "Gellak verwijderen", price: "€ 5,00" },
+      { name: "Gellak verwijderen", price: "€ 10,00" },
       { name: "Set andere salon", price: "+ € 5,00", note: "toeslag" },
     ],
   },
 ];
 
-/** The two nail-art levels, explained in the salon's own words. */
+/**
+ * The two nail-art levels, in Lynn's own words (supplied Sept 2026), each with a
+ * photo she picked out as a real example of that level.
+ */
 export const nailArtLevels = [
   {
     level: "Level 1",
     price: "€ 0,50 per nagel",
     description:
-      "Heb je een eenvoudige nail art waarvoor slechts één kleur lak nodig is, dan valt dit onder level 1. Denk hierbij aan stijlen zoals french nails of een subtiel hartje op een nagel.",
-    image: "nailart-pastel-french" as ImageKey,
+      "Level 1 is ideaal voor wie houdt van een subtiele look met nét dat beetje extra. Denk aan eenvoudige ontwerpen zoals een french manicure, bloemetjes of minimalistische patronen. Deze designs kosten minder tijd, maar geven je nagels net dat beetje meer.",
+    image: "nailart-roze-bloemetjes" as ImageKey,
   },
   {
     level: "Level 2",
     price: "€ 1,00 per nagel",
     description:
-      "Level 2 nail art vereist meerdere lagen lak om het gewenste ontwerp te creëren. Denk aan een variatie op french nails of trendy leopard nails. Deze ontwerpen kosten meer tijd en vereisen meer precisie.",
-    image: "nailart-bordeaux-mix" as ImageKey,
+      "Level 2 omvat gedetailleerdere en ingewikkeldere designs, zoals dierenprints, meerdere kleurencombinaties en 3D-decoraties als charms, steentjes of parels. Deze ontwerpen vragen meer tijd, creativiteit en precisie.",
+    image: "nailart-swirls-kleur" as ImageKey,
   },
 ];
 
@@ -301,18 +349,24 @@ export const houseRules: RuleGroup[] = [
 /* Why Lynn's Nailbar                                                          */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Three reasons, in Lynn's own voice.
+ *
+ * First person throughout — she asked for copy that sounds like her and not like
+ * a brochure. Keep it that way if you edit these.
+ */
 export const differentiators = [
   {
     title: "Persoonlijke aandacht",
-    body: "Eén klant tegelijk, in een rustige salon aan huis. Ruim ingeplande afspraken, zodat er tijd is om te overleggen en niets gehaast hoeft.",
+    body: "Je hebt de salon even voor jezelf. Ik plan ruim in, zodat we rustig kunnen overleggen en ik nergens hoef te haasten.",
+  },
+  {
+    title: "Vakkundig werk",
+    body: "Secuur werken, tot in de nagelriemen. Je nagels moeten er over vier weken nog goed uitzien, niet alleen op de dag zelf.",
   },
   {
     title: "Gecertificeerd",
-    body: "In februari 2023 behaalde Lynn haar certificaat voor de BIAB-opleiding (Builder in a Bottle). Werken volgens de regels van hygiëne en nagelgezondheid staat voorop.",
-  },
-  {
-    title: "Professionele producten",
-    body: "Er wordt uitsluitend gewerkt met producten van The Gel Bottle en Pink Gellac — vegan, cruelty-free en vrij van schadelijke stoffen.",
+    body: "In februari 2023 haalde ik mijn BIAB-certificaat. Hygiëne en de gezondheid van je eigen nagel gaan bij mij altijd voor.",
   },
 ];
 
@@ -320,27 +374,21 @@ export const differentiators = [
 /* About Lynn                                                                  */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Her story — Lynn's own text, supplied Sept 2026 and lightly tidied for flow.
+ *
+ * It names her in the opening line, so the signature at the end of the page does
+ * NOT repeat her name and title; that double-naming is exactly what she asked to
+ * remove. Mission, vision and the separate certificate block were dropped at the
+ * same time.
+ */
 export const about = {
   intro:
-    "Welkom! Ik ben Lynn Lesmeister, trotse eigenaresse van Lynn's Nailbar. Met passie voor nagelverzorging en oog voor detail zorg ik ervoor dat elke klant mijn salon verlaat met mooi verzorgde nagels.",
+    "Ik ben Lynn, trotse eigenaresse van Lynn's Nailbar. Met een passie voor nagelstyling en oog voor detail streef ik ernaar dat elke klant mijn salon verlaat met een mooi resultaat.",
   paragraphs: [
-    "In mijn nagelsalon draait alles om een persoonlijke ervaring. Ik geloof in de kracht van verzorgde handen en dat mooie nagels het zelfvertrouwen een boost kunnen geven. Mijn doel is om hoogwaardige, veilige en duurzame nagelverzorging aan te bieden in een ontspannen en fijne omgeving.",
-    "Mijn salon moet niet alleen een plek zijn voor mooie nagels, maar ook een plek waar mijn klanten terecht kunnen voor rust en ontspanning — en even kunnen ontsnappen aan de drukte van de dag.",
-    "In februari 2023 heb ik mijn certificaat voor de opleiding BIAB (Builder in a Bottle) behaald. Met dit certificaat bied ik hoogwaardige BIAB-behandelingen aan voor gezonde en sterke nagels. Ik streef ernaar mijn salon te laten groeien en mezelf continu te verbeteren.",
-  ],
-  pillars: [
-    {
-      title: "Missie",
-      body: "Hoogwaardige, veilige en duurzame nagelverzorging aanbieden in een ontspannen en fijne omgeving, met een unieke en persoonlijke ervaring voor iedere klant.",
-    },
-    {
-      title: "Visie",
-      body: "Een salon die niet alleen mooie nagels oplevert, maar ook een plek is voor rust en ontspanning — weg van de drukte van de dag.",
-    },
-    {
-      title: "Certificaat",
-      body: "BIAB (Builder in a Bottle) treatment, behaald in februari 2023. De basis voor gezonde, sterke nagels die netjes doorgroeien.",
-    },
+    "In 2023 heb ik mijn certificaat voor de BIAB-behandeling behaald. Sindsdien blijf ik mijn techniek verbeteren en voer ik de behandelingen steeds sneller en nauwkeuriger uit, zonder dat de kwaliteit eronder lijdt.",
+    "Dan nog iets persoonlijks: naast het werken in mijn salon studeer ik ook nog. Die combinatie is soms uitdagend, maar het zorgt voor een fijne afwisseling. En ondanks de drukte neem ik altijd de tijd voor mijn klanten.",
+    "Ik kan met trots zeggen dat mijn salon bekendstaat om de kwaliteit van het werk en om de persoonlijke, gezellige sfeer.",
   ],
 } as const;
 
@@ -348,26 +396,38 @@ export const about = {
 /* Reviews — verbatim from the current site                                    */
 /* -------------------------------------------------------------------------- */
 
-export type Review = { author: string; quote: string };
+/**
+ * The initials that used to sit under each quote were removed at Lynn's request
+ * — "S. V." reads as anonymised data rather than a person, which made the
+ * reviews feel less real, not more.
+ *
+ * `name` is optional and unused for now: fill it with a real first name once a
+ * customer has agreed to be named, and it will render automatically.
+ */
+export type Review = { quote: string; name?: string };
+
+/**
+ * Which review carries the home page. Index into `reviews` below.
+ *
+ * Picked for specificity: it names both the craft and the atmosphere, which is
+ * what a first-time visitor is weighing up. Change the number to feature another.
+ */
+export const featuredReviewIndex = 3;
 
 export const reviews: Review[] = [
   {
-    author: "S. V.",
     quote:
       "Super fijne service en mooi resultaat! Ben er elke keer weer blij mee!",
   },
   {
-    author: "J. T.",
     quote:
       "Super leuke en gezellige plek om je nagels te laten doen! Alles is schoon en er wordt netjes gewerkt. Ik loop altijd tevreden de deur uit!",
   },
   {
-    author: "C. V.",
     quote:
       "Professionele salon aan huis. Altijd gezellig en ik hou er elke keer weer prachtige nagels aan over. Tijdens de afspraken wordt er goed voor mij gezorgd en mijn nagels worden heel secuur en met beleid behandeld.",
   },
   {
-    author: "L. J.",
     quote:
       "Lynn werkt zorgvuldig en nauwkeurig waardoor ik altijd tevreden ben met het eindresultaat. Naast dat ze prachtige nagels zet vind ik het ook heel gezellig en voel ik mij altijd op mijn gemak.",
   },
@@ -383,17 +443,27 @@ export const faq: FaqItem[] = [
   {
     question: "Wat is BIAB precies?",
     answer:
-      "BIAB staat voor Builder In A Bottle: een flexibele gel die als een beschermlaag over je eigen nagel gaat. Het geeft stevigheid met een natuurlijke look en is ideaal voor korte tot medium lange nagels. Bij regelmatig gebruik kan er zelfs een c-curve ontstaan, wat je nagels steviger maakt en er slanker uit laat zien.",
+      "BIAB staat voor Builder In A Bottle: een builder gel die als een beschermlaag over je eigen nagel gaat. Het geeft broze nagels stevigheid, voorkomt breken en helpt je eigen nagel bij het groeien. Je kiest uit verschillende nude-tinten, voor een natuurlijke uitstraling.",
   },
   {
     question: "Hoe lang blijft BIAB zitten?",
     answer:
-      "De gel blijft 4 tot 6 weken mooi zitten, afhankelijk van je nagelconditie. Voor het beste resultaat wordt aangeraden de BIAB-behandeling regelmatig te herhalen, zodat je nagels rustig kunnen doorgroeien.",
+      "Gemiddeld 3 tot 5 weken, afhankelijk van je nagelconditie en je dagelijkse bezigheden. Voor het mooiste resultaat herhaal je de behandeling regelmatig, zodat je nagels rustig kunnen doorgroeien.",
+  },
+  {
+    question: "Wat is het verschil tussen BIAB en gellak?",
+    answer:
+      "BIAB is een builder gel: dikker, steviger, en bedoeld om je nagel te versterken. Gellak is dunner dan builder gel maar dikker dan gewone nagellak, en gaat vooral om kleur. Gellak wordt aangebracht over BIAB of over een rubber base. BIAB blijft gemiddeld 3 tot 5 weken zitten, gellak 3 tot 4 weken.",
+  },
+  {
+    question: "Ik wil geen zichtbare kunstnagels. Kan dat?",
+    answer:
+      "Ja, daar is de behandeling Herstel & Versterk voor. Ik breng dan een transparante BIAB-laag aan met een matte topcoat, zodat het er zo natuurlijk mogelijk uitziet. Ideaal voor nagelbijters, of als je nagels uit zichzelf moeilijk lang worden.",
   },
   {
     question: "Is BIAB schadelijk voor mijn eigen nagels?",
     answer:
-      "Nee. BIAB is juist bedoeld om je eigen nagel te beschermen en op een natuurlijke manier te laten groeien. Het product is vegan, cruelty-free en vrij van schadelijke stoffen. Bij het afhalen wordt er zorgvuldig gewerkt, zodat je natuurlijke nagel intact blijft.",
+      "Nee. BIAB is juist bedoeld om je eigen nagel te beschermen en te laten groeien. Er wordt gewerkt met The Gel Bottle, het officiële BIAB-merk. Bij het afhalen werk ik zorgvuldig, zodat je natuurlijke nagel intact blijft.",
   },
   {
     question: "Hoe ver van tevoren moet ik een afspraak maken?",
@@ -408,7 +478,7 @@ export const faq: FaqItem[] = [
   {
     question: "Kan ik ook nail art laten zetten?",
     answer:
-      "Zeker. Geef je wens van tevoren door in verband met de benodigde tijd. Level 1 (één kleur lak, bijvoorbeeld french nails of een subtiel hartje) kost € 0,50 per nagel. Level 2 (meerdere lagen, bijvoorbeeld leopard nails) kost € 1,00 per nagel.",
+      "Zeker. Geef je wens van tevoren door, dan plan ik er genoeg tijd voor in. Level 1 (subtiel werk, bijvoorbeeld een french manicure, bloemetjes of minimalistische patronen) kost € 0,50 per nagel. Level 2 (gedetailleerder, zoals dierenprints, meerdere kleuren of 3D-decoraties) kost € 1,00 per nagel. Chrome over de hele set kost € 3,00.",
   },
   {
     question: "Krijg ik garantie op mijn nagels?",
@@ -430,50 +500,43 @@ export const faq: FaqItem[] = [
 /* Gallery                                                                     */
 /* -------------------------------------------------------------------------- */
 
-/** Ordered for visual rhythm: colour and crop alternate down the columns. */
+/**
+ * Ordered for visual rhythm: colour and crop alternate down the columns.
+ *
+ * Lynn's new photography (Sept 2026) leads, followed by a trimmed selection of
+ * the older set. She asked for the dated photos to go; rather than cut the page
+ * down to ten tiles, the weakest were dropped and the rest kept. Say the word and
+ * the tail below `producten-the-gel-bottle` can go too.
+ */
 export const galleryImages: ImageKey[] = [
+  "nailart-bordeaux-stippen",
+  "gellak-dieprood",
+  "nailart-roze-bloemetjes",
+  "gellak-geel-french",
+  "nailart-swirls-kleur",
+  "biab-parelmoer-zwartwit",
+  "nailart-roze-kusjes",
+  "kleurenwaaier-schelp",
+  "nailart-stippen-french",
+  "producten-the-gel-bottle",
   "biab-soft-french",
   "gellak-donkerrood",
   "biab-mocha-parelmoer",
   "nailart-bloemen",
+  "biab-babyboom",
+  "gellak-rose-chrome",
   "biab-parelmoer",
   "gellak-aubergine-chrome",
-  "nailart-pastel-french",
-  "biab-babyboom",
-  "gellak-rose-chrome",
-  "biab-mocha-naturel",
-  "nailart-bordeaux-french",
-  "gellak-pastelgeel",
-  "biab-parelmoer-detail",
-  "gellak-kersenrood",
-  "biab-naturel-daglicht",
-  "nailart-bordeaux-mix",
-  "gellak-fuchsia",
-  "biab-roze-parelmoer",
-  "biab-naturel-roze",
-  "kleurenwaaier",
-];
-
-/** A shorter, tighter edit used on the home page. */
-export const featuredGallery: ImageKey[] = [
-  "biab-soft-french",
-  "gellak-donkerrood",
-  "biab-mocha-parelmoer",
-  "nailart-bloemen",
-  "biab-parelmoer",
-  "gellak-rose-chrome",
-  "nailart-pastel-french",
-  "biab-babyboom",
 ];
 
 /** Used in the Instagram strip. */
 export const instagramStrip: ImageKey[] = [
-  "biab-babyboom",
-  "gellak-aubergine-chrome",
-  "nailart-bloemen",
-  "biab-mocha-naturel",
-  "gellak-kersenrood",
-  "biab-parelmoer",
-  "nailart-pastel-french",
-  "gellak-pastelgeel",
+  "nailart-bordeaux-stippen",
+  "gellak-dieprood",
+  "nailart-roze-bloemetjes",
+  "gellak-geel-french",
+  "nailart-swirls-kleur",
+  "nailart-roze-kusjes",
+  "nailart-stippen-french",
+  "biab-parelmoer-zwartwit",
 ];

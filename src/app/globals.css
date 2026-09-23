@@ -195,6 +195,39 @@
   animation: settle-in 1.2s var(--ease-soft) both;
 }
 
+/**
+ * A horizontal rail the visitor swipes through. The scrollbar is hidden because
+ * the rail already signals itself — photos run off the edge of the frame — and a
+ * grey system bar under a row of nail photography cheapens it.
+ *
+ * The rail stays a real scroll container, so touch swipe, trackpad and arrow keys
+ * all keep working; only the bar is hidden.
+ */
+.rail {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  /**
+   * Required, not cosmetic. Grid and flex items default to `min-width: auto`,
+   * which sizes them to their content — so a rail of seven photos made the whole
+   * page 992px wide on a 375px phone and the document scrolled sideways. This
+   * lets the rail shrink to its track and scroll internally, as intended.
+   */
+  min-width: 0;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail > * {
+  scroll-snap-align: start;
+  flex: none;
+}
+
 /* Radix accordion open/close, driven by the measured content height. */
 @keyframes acc-down {
   from {

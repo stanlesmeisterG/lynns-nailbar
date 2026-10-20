@@ -6,13 +6,18 @@ import { BookButton } from "@/components/ui/book-button";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/section";
 import { imgProps } from "@/lib/images";
+import { heroImages } from "@/lib/site";
 
 /** Three facts that answer "is this for me?" before the visitor scrolls. */
 const heroFacts = [
   { value: "3–5", label: "weken mooi" },
-  { value: "2023", label: "gecertificeerd BIAB" },
+  { value: "2023", label: "gecertificeerd bij Florence Beauty & Nails" },
   { value: "1-op-1", label: "salon aan huis" },
 ];
+
+/** Seconds each hero photo is shown, and how long the crossfade between takes. */
+const HOLD = 6;
+const FADE = 1.6;
 
 /**
  * Hero.
@@ -69,8 +74,8 @@ export function Hero() {
               className="mt-7 max-w-md animate-fade-up text-[1.0625rem] leading-relaxed text-muted"
               style={{ animationDelay: "700ms" }}
             >
-              Gespecialiseerd in BIAB, gellak en elegante nageldesigns in
-              Nijmegen. Alle aandacht voor jou, in een rustige salon aan huis.
+              Gespecialiseerd in BIAB, gellak en nail art in Nijmegen, met
+              persoonlijke aandacht in een rustige salon aan huis.
             </p>
 
             <div
@@ -89,25 +94,10 @@ export function Hero() {
             className="relative animate-settle-in lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1 lg:self-center"
             style={{ animationDelay: "200ms" }}
           >
-            {/* A finished set, not a portrait — this is the first thing a visitor
-                should judge the salon on.
-
-                Chosen for tone as much as for the work: a warm off-white wall and
-                a pale french set sit inside the sand-and-taupe palette, where a
-                darker, moodier shot fought it. The file is 950x1800, so the 4:5
-                frame crops top and bottom and leaves the hand centred.
-
-                Lynn is supplying new hero photography; swap the key below and
-                nothing else needs to change. */}
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-image)] bg-sand">
-              <Image
-                {...imgProps("biab-soft-french")}
-                priority
-                fetchPriority="high"
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="size-full object-cover"
-              />
-            </div>
+            {/* Finished sets, not a portrait — this is the first thing a visitor
+                should judge the salon on. Lynn picked these in Oct 2026; the
+                list lives in `heroImages` in site.ts. */}
+            <HeroPhotos />
           </div>
 
           {/* Proof strip ----------------------------------------------------- */}
@@ -132,6 +122,69 @@ export function Hero() {
         </div>
       </Container>
     </section>
+  );
+}
+
+/**
+ * The hero photographs, crossfading one into the next.
+ *
+ * Pure CSS, like the rest of the hero, so it needs no JavaScript to run. The
+ * first photo is an ordinary image underneath that never moves: it is what loads
+ * first, what the page is judged on before anything animates, and all a
+ * reduced-motion visitor ever sees (the global reduced-motion rule collapses the
+ * animations, and the overlays fall back to their resting `opacity-0`).
+ *
+ * Every later photo is an overlay that fades in over the one before. A middle
+ * overlay stays fully opaque until the next one has finished fading in on top of
+ * it, so the crossfade never lets the base show through halfway; the last one
+ * fades out to reveal the base, and the cycle starts again.
+ */
+function HeroPhotos() {
+  const [first, ...overlays] = heroImages;
+  const total = heroImages.length * HOLD;
+  const at = (seconds: number) => `${((seconds / total) * 100).toFixed(3)}%`;
+
+  const keyframes = `
+@keyframes hero-overlay {
+  0% { opacity: 0; }
+  ${at(FADE)} { opacity: 1; }
+  ${at(HOLD + FADE)} { opacity: 1; }
+  ${at(HOLD + FADE + 0.01)} { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes hero-overlay-last {
+  0% { opacity: 0; }
+  ${at(FADE)} { opacity: 1; }
+  ${at(HOLD)} { opacity: 1; }
+  ${at(HOLD + FADE)} { opacity: 0; }
+  100% { opacity: 0; }
+}`;
+
+  return (
+    <div className="relative aspect-[4/5] overflow-hidden rounded-[var(--radius-image)] bg-sand">
+      <Image
+        {...imgProps(first)}
+        priority
+        fetchPriority="high"
+        sizes="(max-width: 1024px) 100vw, 40vw"
+        className="absolute inset-0 size-full object-cover"
+      />
+      {overlays.map((key, i) => (
+        <Image
+          key={key}
+          {...imgProps(key)}
+          // Decorative repeats of the same idea; the first photo carries the alt.
+          alt=""
+          fetchPriority="low"
+          sizes="(max-width: 1024px) 100vw, 40vw"
+          className="absolute inset-0 size-full object-cover opacity-0"
+          style={{
+            animation: `${i === overlays.length - 1 ? "hero-overlay-last" : "hero-overlay"} ${total}s ease-in-out ${(i + 1) * HOLD - FADE}s infinite`,
+          }}
+        />
+      ))}
+      {overlays.length > 0 ? <style>{keyframes}</style> : null}
+    </div>
   );
 }
 

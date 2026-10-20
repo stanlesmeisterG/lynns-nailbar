@@ -1,21 +1,18 @@
-import { Mail, MapPin, Phone } from "lucide-react";
-import Image from "next/image";
+import { Mail, MapPin, MessageCircle } from "lucide-react";
 
 import { BookButton } from "@/components/ui/book-button";
 import { InstagramIcon } from "@/components/ui/brand-icons";
 import { PageHeader } from "@/components/ui/page-header";
 import { Reveal } from "@/components/ui/reveal";
 import { Container, Section } from "@/components/ui/section";
-import { imgProps } from "@/lib/images";
 import { JsonLd, breadcrumbSchema, buildMetadata } from "@/lib/seo";
-import { availabilityNote, contact, links, openingHours } from "@/lib/site";
+import { availabilityNote, contact, links } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: "Contact & route",
   description:
-    "Lynn's Nailbar, Molenveldlaan 270 in Nijmegen. Bel 06 - 50 41 60 05, mail of plan direct online je afspraak. Uitsluitend op afspraak.",
+    "Lynn's Nailbar, Molenveldlaan 270 in Nijmegen. Stuur een WhatsApp naar 06 - 50 41 60 05, mail of plan direct online je afspraak. Uitsluitend op afspraak.",
   path: "/contact",
-  image: "/images/salon-werkplek.jpg",
 });
 
 /**
@@ -25,6 +22,10 @@ export const metadata = buildMetadata({
  * beside it. A contact form was deliberately left out: the salon books through
  * Salonized, and a form that lands in an inbox is a slower path to an
  * appointment than the booking button.
+ *
+ * Trimmed in Oct 2026: the number is WhatsApp only (Lynn would rather get a
+ * message than a call), TikTok is gone, and so are the opening-hours card — the
+ * lede now says it is by appointment only — and the closing photo.
  */
 export default function ContactPage() {
   return (
@@ -37,7 +38,7 @@ export default function ContactPage() {
             <span className="text-accent italic">de salon.</span>
           </>
         }
-        lede="Je vindt me aan de Molenveldlaan in Nijmegen. Ik ontvang je persoonlijk, dus kom op de afgesproken tijd — dan hebben we alle rust voor jouw behandeling."
+        lede="De salon is gevestigd aan de Molenveldlaan in Nijmegen. Omdat ik een salon aan huis heb, ontvang ik iedereen persoonlijk en werk ik uitsluitend op afspraak. Daarom vraag ik je om op de afgesproken tijd te komen, zodat ik voor iedereen de benodigde tijd kan nemen."
       />
 
       <Section space="tight" className="pt-0">
@@ -50,7 +51,7 @@ export default function ContactPage() {
                   Plan je afspraak online
                 </h2>
                 <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-muted">
-                  {availabilityNote.body}
+                  {availabilityNote.howTo}
                 </p>
                 <BookButton size="lg" className="mt-8">
                   Afspraak maken
@@ -74,11 +75,15 @@ export default function ContactPage() {
                   </ContactItem>
 
                   <ContactItem
-                    icon={<Phone aria-hidden strokeWidth={1.25} className="size-4" />}
-                    label="Telefoon"
+                    icon={
+                      <MessageCircle aria-hidden strokeWidth={1.25} className="size-4" />
+                    }
+                    label="WhatsApp"
                   >
                     <a
-                      href={contact.phoneHref}
+                      href={contact.whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="transition-colors hover:text-onyx"
                     >
                       {contact.phoneDisplay}
@@ -105,17 +110,9 @@ export default function ContactPage() {
                       href={links.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block transition-colors hover:text-onyx"
+                      className="transition-colors hover:text-onyx"
                     >
                       Instagram {links.instagramHandle}
-                    </a>
-                    <a
-                      href={links.tiktok}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-1 block transition-colors hover:text-onyx"
-                    >
-                      TikTok {links.tiktokHandle}
                     </a>
                   </ContactItem>
                 </dl>
@@ -126,79 +123,19 @@ export default function ContactPage() {
               </div>
             </Reveal>
 
-            {/* Map + hours ------------------------------------------------ */}
-            <div className="flex flex-col gap-6 lg:col-span-5">
-              <Reveal delay={0.08} className="flex-1">
-                <div className="h-full overflow-hidden rounded-[var(--radius-image)] bg-sand">
-                  <iframe
-                    src={contact.mapsEmbedUrl}
-                    title={`Kaart met de locatie van Lynn's Nailbar aan de ${contact.street} in ${contact.city}`}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="size-full min-h-[22rem] border-0"
-                  />
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.14}>
-                <div className="rounded-[var(--radius-image)] bg-ink p-8 text-cream md:p-10">
-                  <h2 className="label-xs text-cream/60">Openingstijden</h2>
-                  {openingHours.length > 0 ? (
-                    <dl className="mt-6 space-y-3 text-sm">
-                      {openingHours.map(({ day, hours }) => (
-                        <div
-                          key={day}
-                          className="flex justify-between gap-4 border-b border-cream/12 pb-3 last:border-0"
-                        >
-                          <dt className="text-cream/80">{day}</dt>
-                          <dd className={hours ? "" : "text-cream/60"}>
-                            {hours ?? "Gesloten"}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
-                  ) : (
-                    <>
-                      <p className="font-display mt-5 text-[1.75rem] leading-tight font-light">
-                        {availabilityNote.heading}
-                      </p>
-                      <p className="mt-4 text-sm leading-relaxed text-cream/60">
-                        De beschikbare dagen en tijden staan altijd actueel in de
-                        online agenda.
-                      </p>
-                      <a
-                        href={links.booking}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-6 inline-block text-sm underline decoration-cream/30 underline-offset-4 transition-colors hover:decoration-cream"
-                      >
-                        Bekijk beschikbaarheid
-                      </a>
-                    </>
-                  )}
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </Container>
-      </Section>
-
-      {/* Closing image ------------------------------------------------------ */}
-      {/* The last photo still from the old shoot. /over-de-salon now carries the
-          new one of Lynn in the salon; this band could use a new wide shot. */}
-      <Section space="tight" className="pt-0">
-        <Container>
-          <Reveal>
-            <div className="overflow-hidden rounded-[var(--radius-image)] bg-sand">
-              <div className="aspect-[21/9]">
-                <Image
-                  {...imgProps("salon-werkplek")}
-                  sizes="100vw"
-                  className="size-full object-cover object-center"
+            {/* Map --------------------------------------------------------- */}
+            <Reveal delay={0.08} className="lg:col-span-5">
+              <div className="h-full overflow-hidden rounded-[var(--radius-image)] bg-sand">
+                <iframe
+                  src={contact.mapsEmbedUrl}
+                  title={`Kaart met de locatie van Lynn's Nailbar aan de ${contact.street} in ${contact.city}`}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="size-full min-h-[22rem] border-0"
                 />
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </Container>
       </Section>
 

@@ -1,9 +1,9 @@
-import { GalleryMasonry } from "@/components/gallery/gallery-masonry";
+import { GalleryStrip } from "@/components/gallery/gallery-strip";
 import { BookingCta } from "@/components/sections/booking-cta";
 import { Instagram } from "@/components/sections/instagram";
 import { BookButton } from "@/components/ui/book-button";
 import { PageHeader } from "@/components/ui/page-header";
-import { Container, Section } from "@/components/ui/section";
+import { Section } from "@/components/ui/section";
 import { JsonLd, breadcrumbSchema, buildMetadata } from "@/lib/seo";
 import { galleryImages } from "@/lib/site";
 
@@ -12,14 +12,15 @@ export const metadata = buildMetadata({
   description:
     "Bekijk het werk van Lynn's Nailbar in Nijmegen: BIAB sets, gellak in elke tint en handgeschilderde nail art. Laat je inspireren voor je volgende afspraak.",
   path: "/galerij",
-  image: "/images/biab-mocha-parelmoer.jpg",
+  image: "/images/gellak-rood-armbanden.jpg",
 });
 
 /**
- * The full portfolio, in a four-column masonry with the shared lightbox.
+ * The full portfolio.
  *
- * The Instagram strip moved here from the home page in Sept 2026 — this is where
- * someone browsing the work is most likely to want more of it.
+ * Since Oct 2026 this is two drifting photo strips with the shared lightbox,
+ * then the Instagram bar — Lynn found the old masonry plus a second Instagram
+ * marquee long and repetitive. See `GalleryStrip` for how the strip behaves.
  */
 export default function GalleryPage() {
   return (
@@ -32,20 +33,20 @@ export default function GalleryPage() {
             <span className="text-accent italic">van dichtbij.</span>
           </>
         }
-        lede="Elke set wordt tijdens de afspraak met de hand opgebouwd en afgewerkt. Zie je iets wat je mooi vindt? Neem de foto mee naar je afspraak — of stuur hem vooraf door."
+        lede="Elke set wordt zorgvuldig met de hand aangebracht en afgewerkt. Zie je iets wat je mooi vindt? Stuur van tevoren een inspiratiefoto door!"
       >
         <BookButton size="lg">Afspraak maken</BookButton>
       </PageHeader>
 
-      <Section space="tight" className="pt-0">
-        <Container>
-          <GalleryMasonry images={galleryImages} columns={4} />
-        </Container>
+      {/* Full-bleed: the strip runs edge to edge, outside the container. */}
+      <Section space="tight" className="overflow-hidden pt-0">
+        <GalleryStrip images={galleryImages} />
       </Section>
 
       <Instagram />
 
-      <BookingCta />
+      {/* Not the default photo: that one is already in the strip. */}
+      <BookingCta image="biab-parelmoer-detail" />
 
       <JsonLd
         data={breadcrumbSchema([

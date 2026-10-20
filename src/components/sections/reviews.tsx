@@ -6,7 +6,7 @@ import * as React from "react";
 
 import { Reveal } from "@/components/ui/reveal";
 import { Container, Eyebrow, Section } from "@/components/ui/section";
-import { reviews } from "@/lib/site";
+import { googleReviewCount, links, reviews } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -49,21 +49,31 @@ export function Reviews() {
               <span className="text-accent italic">zeggen.</span>
             </h2>
 
-            <div
-              className="mt-8 flex items-center gap-1.5"
-              aria-label="Vijf van de vijf sterren"
-            >
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  aria-hidden
-                  className="size-4 fill-accent text-accent"
-                  strokeWidth={0}
-                />
-              ))}
-              <span className="ml-2 text-xs text-muted">
-                {reviews.length} reviews
+            <div className="mt-8 flex items-center gap-1.5">
+              <span
+                role="img"
+                aria-label="Vijf van de vijf sterren"
+                className="flex gap-1.5"
+              >
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    aria-hidden
+                    className="size-4 fill-accent text-accent"
+                    strokeWidth={0}
+                  />
+                ))}
               </span>
+              {/* The total on Google, not the handful quoted here — saying "4
+                  reviews" undersold a salon with fifteen. */}
+              <a
+                href={links.googleReviews}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 text-xs text-muted underline decoration-line underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
+              >
+                {googleReviewCount} reviews op Google
+              </a>
             </div>
           </Reveal>
 

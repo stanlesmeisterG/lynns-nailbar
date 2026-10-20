@@ -38,8 +38,8 @@ export function SiteFooter() {
               </span>
             </Link>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-cream/60">
-              {site.tagline}. Gespecialiseerd in BIAB, gellak en elegante
-              nageldesigns — in een rustige salon aan huis.
+              {site.tagline}. Gespecialiseerd in BIAB, gellak en nail art, met
+              persoonlijke aandacht in een rustige salon aan huis.
             </p>
             <BookButton
               size="sm"
@@ -67,10 +67,12 @@ export function SiteFooter() {
               </p>
               <p>
                 <a
-                  href={contact.phoneHref}
+                  href={contact.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="transition-colors hover:text-cream"
                 >
-                  {contact.phoneDisplay}
+                  WhatsApp {contact.phoneDisplay}
                 </a>
               </p>
               <p>
@@ -148,16 +150,6 @@ export function SiteFooter() {
                   className="transition-colors hover:text-cream"
                 >
                   Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href={links.tiktok}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="transition-colors hover:text-cream"
-                >
-                  TikTok
                 </a>
               </li>
             </ul>

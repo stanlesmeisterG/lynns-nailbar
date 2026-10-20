@@ -12,9 +12,10 @@ import { imgProps } from "@/lib/images";
 import { JsonLd, breadcrumbSchema, buildMetadata, faqSchema } from "@/lib/seo";
 import {
   availabilityNote,
+  contact,
   extraPrices,
   houseRules,
-  nailArtLevels,
+  nailArtOptions,
   treatments,
 } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -35,8 +36,8 @@ export const metadata = buildMetadata({
  * price change had to be made twice.
  *
  * So the price now lives with the treatment it belongs to, and there is no summary
- * table restating them further down. The only tables left cover what the treatment
- * bands don't: add-ons and removal.
+ * table restating them further down. The only table left covers what the treatment
+ * bands don't: removing a set.
  */
 export default function TreatmentsPage() {
   return (
@@ -45,11 +46,11 @@ export default function TreatmentsPage() {
         eyebrow="Behandelingen & prijzen"
         title={
           <>
-            Alles wat ik doe,{" "}
+            Alle behandelingen,{" "}
             <span className="text-accent italic">en wat het kost.</span>
           </>
         }
-        lede="Elke behandeling begint met het in model vijlen van je nagels en het verzorgen van je nagelriemen. Die zit dus altijd bij de prijs in. Betalen kan met pin of contant."
+        lede="Elke behandeling is inclusief het in model vijlen van de nagels en het verzorgen van de nagelriemen. Betalen kan na afloop met pin of contant."
       >
         <BookButton size="lg">Afspraak maken</BookButton>
       </PageHeader>
@@ -119,19 +120,28 @@ export default function TreatmentsPage() {
                     </p>
                   ) : null}
 
-                  <h3 className="label-xs mt-10 text-muted">Wat het je geeft</h3>
-                  <ul className="mt-5 space-y-3.5">
-                    {treatment.benefits.map((benefit) => (
-                      <li key={benefit} className="flex gap-3.5 text-[0.9375rem]">
-                        <Check
-                          aria-hidden
-                          strokeWidth={1.5}
-                          className="mt-0.5 size-4 shrink-0 text-accent"
-                        />
-                        <span className="leading-relaxed">{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {treatment.benefits ? (
+                    <>
+                      <h3 className="label-xs mt-10 text-muted">
+                        {treatment.benefitsTitle ?? "Wat het je geeft"}
+                      </h3>
+                      <ul className="mt-5 space-y-3.5">
+                        {treatment.benefits.map((benefit) => (
+                          <li
+                            key={benefit}
+                            className="flex gap-3.5 text-[0.9375rem]"
+                          >
+                            <Check
+                              aria-hidden
+                              strokeWidth={1.5}
+                              className="mt-0.5 size-4 shrink-0 text-accent"
+                            />
+                            <span className="leading-relaxed">{benefit}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
 
                   {/* The tariffs for a treatment that has more than one, listed
                       here rather than in a summary table further down. */}
@@ -185,7 +195,7 @@ export default function TreatmentsPage() {
         );
       })}
 
-      {/* Nail art levels --------------------------------------------------- */}
+      {/* Nail art levels and chrome --------------------------------------- */}
       <Section space="tight" id="nail-art-levels">
         <Container>
           <Reveal>
@@ -199,29 +209,44 @@ export default function TreatmentsPage() {
             </p>
           </Reveal>
 
-          <ul className="mt-14 grid gap-10 md:grid-cols-2 md:gap-8">
-            {nailArtLevels.map((level, i) => (
-              <Reveal as="li" key={level.level} delay={i * 0.08}>
-                <article className="h-full overflow-hidden rounded-[var(--radius-card)] bg-sand/35">
-                  <div className="aspect-[16/10] bg-sand">
+          {/* Level 1, level 2 and chrome as three equal cards. Chrome joined in
+              Oct 2026: it used to be a row in the add-ons table, but it is the
+              finish people ask about most, and it needs a photo to explain. */}
+          <ul className="mt-14 grid gap-10 md:grid-cols-3 md:gap-6 lg:gap-8">
+            {nailArtOptions.map((option, i) => (
+              <Reveal as="li" key={option.title} delay={i * 0.08}>
+                <article className="flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] bg-sand/35">
+                  {/* min-h-0: as a flex item the frame would otherwise grow to
+                      the photo's own height, so portrait and landscape photos
+                      gave the three cards three different image heights. */}
+                  <div className="aspect-[4/3] min-h-0 shrink-0 bg-sand">
                     <Image
-                      {...imgProps(level.image)}
-                      sizes="(max-width: 768px) 100vw, 44vw"
+                      {...imgProps(option.image)}
+                      sizes="(max-width: 768px) 100vw, 30vw"
                       className="size-full object-cover"
                     />
                   </div>
-                  <div className="p-8">
-                    <div className="flex items-baseline justify-between gap-4">
+                  <div className="flex flex-1 flex-col p-7 lg:p-8">
+                    <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
                       <h3 className="font-display text-[1.625rem] leading-none font-normal">
-                        {level.level}
+                        {option.title}
                       </h3>
-                      <p className="font-display text-[1.25rem] leading-none tabular-nums text-muted">
-                        {level.price}
+                      <p className="font-display text-[1.125rem] leading-none tabular-nums text-muted">
+                        {option.price}
                       </p>
                     </div>
                     <p className="mt-5 text-[0.9375rem] leading-relaxed text-muted">
-                      {level.description}
+                      {option.description}
                     </p>
+                    {/* Pinned to the foot of the card, so it lines up with the
+                        bottom of its neighbours rather than floating mid-card. */}
+                    {option.caption ? (
+                      <p className="mt-auto pt-6">
+                        <span className="block border-t border-line pt-4 text-xs leading-relaxed text-muted">
+                          {option.caption}
+                        </span>
+                      </p>
+                    ) : null}
                   </div>
                 </article>
               </Reveal>
@@ -230,7 +255,7 @@ export default function TreatmentsPage() {
         </Container>
       </Section>
 
-      {/* Add-ons, removal and the booking card ----------------------------- */}
+      {/* Removal and the booking card -------------------------------------- */}
       <Section space="tight" id="extras" className="bg-sand/35">
         <Container>
           <div className="grid gap-16 lg:grid-cols-12 lg:gap-20">
@@ -291,6 +316,28 @@ export default function TreatmentsPage() {
                   </section>
                 </Reveal>
               ))}
+
+              {/* Moved here from the home page in Oct 2026 — the products belong
+                  with the treatments they are used for. It sits under the
+                  removal table rather than the booking card: that table is
+                  three rows, and the column was left mostly empty beside it.
+                  The colour fan that used to be on this page is gone: Lynn has
+                  far more colours now. */}
+              <Reveal delay={0.08}>
+                <figure>
+                  <div className="aspect-[3/2] overflow-hidden rounded-[var(--radius-card)] bg-sand">
+                    <Image
+                      {...imgProps("producten-gellak")}
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="size-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-4 max-w-md text-xs leading-relaxed text-muted">
+                    Gewerkt wordt met producten van The GelBottle en Pink Gellac
+                    — vegan en vrij van schadelijke stoffen.
+                  </figcaption>
+                </figure>
+              </Reveal>
             </div>
 
             {/* Booking card ---------------------------------------------- */}
@@ -306,24 +353,19 @@ export default function TreatmentsPage() {
                   <BookButton size="lg" className="mt-7 w-full">
                     Boek hier
                   </BookButton>
-                  <p className="mt-5 text-xs leading-relaxed text-muted">
+                  {/* The "berichtje" the copy above invites, one tap away. */}
+                  <a
+                    href={contact.whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 block text-center text-sm underline decoration-muted underline-offset-4 transition-colors hover:decoration-ink"
+                  >
+                    Stuur een berichtje via WhatsApp
+                  </a>
+                  <p className="mt-6 text-xs leading-relaxed text-muted">
                     {availabilityNote.notice}
                   </p>
                 </div>
-
-                <div className="mt-6 overflow-hidden rounded-[var(--radius-card)] bg-sand">
-                  <div className="aspect-[4/3]">
-                    <Image
-                      {...imgProps("kleurenwaaier-schelp")}
-                      sizes="(max-width: 1024px) 100vw, 28vw"
-                      className="size-full object-cover"
-                    />
-                  </div>
-                </div>
-                <p className="mt-4 text-xs leading-relaxed text-muted">
-                  Kies je kleur rustig uit in de salon — de volledige waaier ligt
-                  klaar.
-                </p>
               </div>
             </Reveal>
           </div>
@@ -336,10 +378,8 @@ export default function TreatmentsPage() {
       <Section space="tight" id="huisregels" className="bg-sand/35">
         <Container>
           <Reveal>
-            <Eyebrow>Huisregels</Eyebrow>
-            <h2 className="font-display mt-7 max-w-2xl text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] font-light">
-              Zo houden we het{" "}
-              <span className="text-accent italic">voor iedereen fijn.</span>
+            <h2 className="font-display max-w-2xl text-[clamp(2rem,4.5vw,3rem)] leading-[1.05] font-light">
+              Huisregels
             </h2>
           </Reveal>
 
@@ -367,7 +407,8 @@ export default function TreatmentsPage() {
         </Container>
       </Section>
 
-      <BookingCta />
+      {/* Not the default photo: that one already leads the gellak band above. */}
+      <BookingCta image="biab-parelmoer-detail" />
 
       <JsonLd data={faqSchema()} />
       <JsonLd

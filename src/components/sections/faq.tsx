@@ -37,17 +37,19 @@ export function Faq() {
               <p className="mt-7 max-w-sm text-[0.9375rem] leading-relaxed text-muted">
                 Staat je vraag er niet bij? Stuur gerust een berichtje via{" "}
                 <a
+                  href={contact.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-muted underline-offset-4 transition-colors hover:decoration-ink"
+                >
+                  WhatsApp
+                </a>{" "}
+                of{" "}
+                <a
                   href={`mailto:${contact.email}`}
                   className="underline decoration-muted underline-offset-4 transition-colors hover:decoration-ink"
                 >
                   e-mail
-                </a>{" "}
-                of{" "}
-                <a
-                  href={contact.phoneHref}
-                  className="whitespace-nowrap underline decoration-muted underline-offset-4 transition-colors hover:decoration-ink"
-                >
-                  {contact.phoneDisplay}
                 </a>
                 , of <BookLink>plan direct je afspraak</BookLink>.
               </p>

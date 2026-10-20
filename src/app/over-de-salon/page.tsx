@@ -39,8 +39,10 @@ export default function AboutPage() {
         eyebrow="Over de salon"
         title={
           <>
-            Een rustige salon,{" "}
-            <span className="text-accent italic">en alle tijd voor jou.</span>
+            Een rustige salon aan huis,{" "}
+            <span className="text-accent italic">
+              en persoonlijke aandacht voor jou.
+            </span>
           </>
         }
       />
@@ -50,15 +52,16 @@ export default function AboutPage() {
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-20">
             <Reveal className="lg:col-span-5">
-              {/* Lynn in her own salon. This does the work of both a portrait and
-                  a salon shot, which is why the page needs only one photograph. */}
+              {/* A stand-in, at Lynn's suggestion, until she has shot a new
+                  portrait (Oct 2026). The earlier photo of her at the work table
+                  is still in public/images as `lynn-salon`. */}
               <div className="overflow-hidden rounded-[var(--radius-image)] bg-sand lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
                 <div className="aspect-[4/5]">
                   <Image
-                    {...imgProps("lynn-salon")}
+                    {...imgProps("lynn-portret")}
                     priority
                     sizes="(max-width: 1024px) 100vw, 40vw"
-                    className="size-full object-cover"
+                    className="size-full object-cover object-top"
                   />
                 </div>
               </div>
@@ -80,11 +83,14 @@ export default function AboutPage() {
                 </div>
               </Reveal>
 
-              {/* Just the flourish. Her own opening line already says who she is,
-                  and printing the name and title again underneath is the
-                  repetition she asked to get rid of. */}
+              {/* Her closing question, then just the flourish. Her own text
+                  already says who she is, and printing the name and title again
+                  underneath is the repetition she asked to get rid of. */}
               <Reveal delay={0.14}>
-                <p className="font-display mt-12 text-[2.5rem] leading-none font-light italic text-accent">
+                <p className="font-display mt-10 text-[clamp(1.375rem,2.2vw,1.75rem)] leading-snug font-light">
+                  {about.closing}
+                </p>
+                <p className="font-display mt-6 text-[2.5rem] leading-none font-light italic text-accent">
                   Lynn
                 </p>
               </Reveal>

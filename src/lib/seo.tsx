@@ -80,7 +80,7 @@ export function localBusinessSchema() {
       { "@type": "City", name: "Nijmegen" },
       { "@type": "AdministrativeArea", name: "Gelderland" },
     ],
-    sameAs: [links.instagram, links.tiktok],
+    sameAs: [links.instagram],
     hasMap: contact.mapsUrl,
     potentialAction: {
       "@type": "ReserveAction",

@@ -10,21 +10,22 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 npm start        # serve the production build
 npm run lint
+npm run images   # rebuild src/lib/images.json after adding or replacing a photo
 ```
 
 ## Pages
 
 | Route            | Purpose                                                   |
 | ---------------- | --------------------------------------------------------- |
-| `/`              | Home — hero, why, treatments, gallery, about, reviews, FAQ, Instagram, booking CTA |
-| `/behandelingen` | BIAB, gellak and nail art, each with benefits, duration and price |
-| `/prijslijst`    | Full price list, nail-art levels, and the house rules      |
-| `/gallerij`      | Complete photo portfolio with lightbox                     |
-| `/over-lynn`     | Lynn's story, mission, vision and certification            |
-| `/contact`       | Contact card, map, availability                            |
+| `/`              | Home — hero, one review, booking CTA                      |
+| `/behandelingen` | BIAB, gellak and nail art with their prices, nail-art levels and chrome, FAQ, house rules |
+| `/galerij`       | The portfolio as two photo strips with a lightbox, plus Instagram |
+| `/over-de-salon` | Lynn's story and the reviews                              |
+| `/contact`       | Contact card, WhatsApp, map                               |
 
-`robots.txt` and `sitemap.xml` are generated from `src/app/robots.ts` and
-`src/app/sitemap.ts`.
+`/prijslijst`, `/gallerij` and `/over-lynn` redirect permanently (see
+`next.config.ts`). `robots.txt` and `sitemap.xml` are generated from
+`src/app/robots.ts` and `src/app/sitemap.ts`.
 
 ## Editing content
 
@@ -32,29 +33,27 @@ npm run lint
 [`src/lib/site.ts`](src/lib/site.ts).** Change them there — nothing is hardcoded
 into components. The most common edits:
 
-- **Prices** — `priceGroups`. The price list page and the schema.org offer
-  catalogue both read from it.
-- **Treatments** — `treatments`. Drives the home page cards and the treatments page.
-- **Reviews** — `reviews`. The first entry is also the quote in the hero card.
+- **Treatments and prices** — `treatments` (with their `variants`),
+  `nailArtOptions` and `extraPrices`. The treatments page and the schema.org offer
+  catalogue both read from them.
+- **Hero photos** — `heroImages`, shown in turn with a slow crossfade.
+- **Gallery** — `galleryImages`; the first half is the top strip.
+- **Reviews** — `reviews`. `featuredReviewIndex` picks the one on the home page;
+  `googleReviewCount` is the total shown next to the stars.
 - **FAQ** — `faq`. Also emitted as `FAQPage` structured data.
 - **Opening hours** — `openingHours` is intentionally an empty array. The salon
-  works strictly by appointment, so the footer and contact page show
-  "Uitsluitend op afspraak" plus a link to live availability. Fill the array with
+  works strictly by appointment, so the footer shows "Uitsluitend op afspraak"
+  plus a link to live availability. Fill the array with
   `{ day: "Maandag", hours: "09:00 – 17:00" }` entries (use `hours: null` for a
-  closed day) and both places switch to a real opening-hours table automatically.
+  closed day) and it switches to a real opening-hours table automatically.
 
 ### Before going live
 
 1. Set `site.url` in `src/lib/site.ts` to the real domain. It drives every
    canonical URL, the Open Graph tags, the sitemap and the structured data.
-2. Confirm the treatment durations. They are marked `durationIsEstimate` because
-   the old site never published them — they are sensible estimates, not the
-   salon's own numbers.
-3. Optionally swap the "Meet Lynn" photograph. The hero uses Lynn's portrait
-   (`lynn-portret`), but the "Welkom in mijn salon" block on the home page and
-   the Over Lynn page still use the salon interior. Both read a single constant —
-   `PORTRAIT` in `src/components/sections/meet-lynn.tsx` — so pointing them at
-   another photo is a one-line change.
+2. Confirm the BIAB and gellak durations. They are marked `durationIsEstimate`
+   because the old site never published them — they are sensible estimates, not
+   the salon's own numbers.
 
 ## Publishing
 
@@ -82,10 +81,11 @@ path, intrinsic dimensions, Dutch alt text and a base64 blur placeholder for
 each. Components read it through `imgProps()` in `src/lib/images.ts`, so a photo
 can never be rendered without dimensions or alt text.
 
-The full-resolution originals are in `source-photos/` (git-ignored).
-
-To add a photo: drop it in `public/images`, then add an entry to
-`images.json` with `src`, `width`, `height`, `alt` and `blur`.
+To add a photo: drop it in `public/images`, add an entry to `images.json` with
+its `src` and a Dutch `alt`, then run `npm run images`. The script fills in the
+dimensions and the blur placeholder, and scales anything over 2400px down in
+place — so replacing a photo with a better file is just overwriting it under the
+same name and running the script again.
 
 ## Design system
 
@@ -114,5 +114,5 @@ that fails to run.
 
 ## Stack
 
-Next.js 15.5 (App Router) · React 19 · TypeScript · Tailwind CSS v4 ·
+Next.js 16.3 (App Router) · React 19.3 · TypeScript · Tailwind CSS v4 ·
 Framer Motion · Radix primitives · Lucide icons.

@@ -78,12 +78,20 @@ Oct 2026. What is left:
 
 - **Full-size originals of the Oct 2026 photos.** Her feedback came as a Word
   file, which shrank every photo in it to about 300px wide. All of them except
-  `gellak-rood-armbanden` are in `public/images/` at that size as stand-ins —
-  overwrite each with the original under the same name, then `npm run images`.
+  `gellak-rood-armbanden` are in `public/images/` at that size — overwrite each
+  with the original under the same name, then `npm run images`.
+  - Small slots (the treatment strips) use them as they are; they hold up there.
+  - Large slots — hero, the BIAB band, the chrome card, the portrait — go
+    through `pickSharp(herPick, standIn)` and show a sharp stand-in until her
+    file is at least 1000px wide. Replacing the file is enough; no code change.
+  - The gallery tiles are sized down a little for now (10.5rem / 15rem) and can
+    go back to 12rem / 16rem once the originals are in.
 - **A new portrait** for `/over-de-salon`. `lynn-portret` is a temporary pick of
-  hers; the older `lynn-salon` is still in the folder.
-- **More reviews.** She has 15 on Google; the site quotes four. The count next
-  to the stars (`googleReviewCount`) links out to Google meanwhile.
+  hers; until it arrives full size, `lynn-salon` stands in.
+
+Decided, not owed: the site quotes the four reviews from her old site and links
+the Google score (`googleRating`, 5,0 from 17 on 20 Oct 2026) rather than
+copying every Google review across. Keep the number current.
 - **BIAB and gellak durations.** Still `durationIsEstimate` in `site.ts` and
   never published on the old site. They are shown as fact on `/behandelingen`.
   Nail art's "15–45 min extra" is hers.

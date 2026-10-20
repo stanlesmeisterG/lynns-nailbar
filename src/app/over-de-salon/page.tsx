@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { Reveal } from "@/components/ui/reveal";
 import { Container, Section } from "@/components/ui/section";
-import { imgProps } from "@/lib/images";
+import { imgProps, pickSharp } from "@/lib/images";
 import { JsonLd, breadcrumbSchema, buildMetadata } from "@/lib/seo";
 import { about } from "@/lib/site";
 
@@ -52,13 +52,14 @@ export default function AboutPage() {
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-20">
             <Reveal className="lg:col-span-5">
-              {/* A stand-in, at Lynn's suggestion, until she has shot a new
-                  portrait (Oct 2026). The earlier photo of her at the work table
-                  is still in public/images as `lynn-salon`. */}
+              {/* `lynn-portret` is the stand-in Lynn suggested until she has shot
+                  a new portrait (Oct 2026). Her copy of it is too small to show
+                  this large, so the earlier photo of her at the work table holds
+                  the place until the full-size file is in (see `pickSharp`). */}
               <div className="overflow-hidden rounded-[var(--radius-image)] bg-sand lg:sticky lg:top-[calc(var(--header-h)+3rem)]">
                 <div className="aspect-[4/5]">
                   <Image
-                    {...imgProps("lynn-portret")}
+                    {...imgProps(pickSharp("lynn-portret", "lynn-salon"))}
                     priority
                     sizes="(max-width: 1024px) 100vw, 40vw"
                     className="size-full object-cover object-top"

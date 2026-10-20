@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 
 import { Reveal } from "@/components/ui/reveal";
 import { Container, Section } from "@/components/ui/section";
-import { featuredReviewIndex, reviews } from "@/lib/site";
+import { featuredReviewIndex, googleRating, links, reviews } from "@/lib/site";
 
 /**
  * One review, on the home page.
@@ -12,8 +12,9 @@ import { featuredReviewIndex, reviews } from "@/lib/site";
  * display size does the same job with less page and more conviction.
  *
  * No attribution line: the initials the old site used ("S. V.") read as
- * anonymised data rather than a person. If a customer ever agrees to be named,
- * fill in `name` on the review and it appears here.
+ * anonymised data rather than a person. In its place sits her score on Google,
+ * linked, which a visitor can check for themselves. If a customer ever agrees
+ * to be named, fill in `name` on the review and it appears here instead.
  */
 export function FeaturedReview() {
   const review = reviews[featuredReviewIndex] ?? reviews[0];
@@ -44,7 +45,16 @@ export function FeaturedReview() {
               </p>
             </blockquote>
             <figcaption className="label-xs mt-9 text-muted">
-              {review.name ?? "Uit de reviews van klanten"}
+              {review.name ?? (
+                <a
+                  href={links.googleReviews}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline decoration-line underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
+                >
+                  {googleRating.score} uit {googleRating.count} reviews op Google
+                </a>
+              )}
             </figcaption>
           </figure>
         </Reveal>

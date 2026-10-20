@@ -6,7 +6,7 @@ import * as React from "react";
 
 import { Reveal } from "@/components/ui/reveal";
 import { Container, Eyebrow, Section } from "@/components/ui/section";
-import { googleReviewCount, links, reviews } from "@/lib/site";
+import { googleRating, links, reviews } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -64,15 +64,15 @@ export function Reviews() {
                   />
                 ))}
               </span>
-              {/* The total on Google, not the handful quoted here — saying "4
-                  reviews" undersold a salon with fifteen. */}
+              {/* The score on Google, not the handful quoted here — saying "4
+                  reviews" undersold a salon with seventeen. */}
               <a
                 href={links.googleReviews}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ml-2 text-xs text-muted underline decoration-line underline-offset-4 transition-colors hover:text-ink hover:decoration-ink"
               >
-                {googleReviewCount} reviews op Google
+                {googleRating.score} uit {googleRating.count} reviews op Google
               </a>
             </div>
           </Reveal>

@@ -6,7 +6,7 @@
  * intros) is written for this site and is free to edit.
  */
 
-import type { ImageKey } from "./images";
+import { pickSharp, type ImageKey } from "./images";
 
 /* -------------------------------------------------------------------------- */
 /* Business details                                                            */
@@ -47,16 +47,20 @@ export const links = {
   booking: "https://lynns-nailbar.salonized.com/widget_bookings/new",
   instagram: "https://www.instagram.com/lynns.nailbar/",
   instagramHandle: "@lynns.nailbar",
-  googleReviews:
-    "https://www.google.com/maps/search/?api=1&query=Lynn%27s+Nailbar+Molenveldlaan+270+Nijmegen",
+  /** Her Google Business profile, by its stable CID rather than a search. */
+  googleReviews: "https://maps.google.com/?cid=12264719572542656348",
 } as const;
 
 /**
- * The review total on Google, shown next to the stars. The site only carries a
- * handful of the quotes, so the count is stated separately and links out —
- * update it when the number on Google moves.
+ * Her score on Google, shown beside the stars and linked to the profile. Checked
+ * on 20 Oct 2026: 5,0 from 17 reviews. Update both when the profile moves.
+ *
+ * The site deliberately quotes only the four reviews from her old site rather
+ * than copying every Google review across: a quote at display size is read, a
+ * slider of seventeen is not, and the live count on Google is the stronger proof
+ * because a visitor can check it.
  */
-export const googleReviewCount = 15;
+export const googleRating = { score: "5,0", count: 17 } as const;
 
 /**
  * The salon is run from home and works strictly by appointment, so there is no
@@ -103,9 +107,11 @@ export const navigation = [
  * nude work — a bright colour in the middle of the cycle reads as an advert.
  */
 export const heroImages: ImageKey[] = [
-  "biab-roze-gouden-ringen",
-  "biab-naturel-kort",
-  "biab-naturel-amandel",
+  // Her three picks, each with a sharp stand-in from the same shoot until the
+  // full-size file arrives (see `pickSharp`).
+  pickSharp("biab-roze-gouden-ringen", "biab-naturel-roze"),
+  pickSharp("biab-naturel-kort", "biab-roze-parelmoer"),
+  pickSharp("biab-naturel-amandel", "biab-babyboom"),
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -170,7 +176,7 @@ export const treatments: Treatment[] = [
     ],
     duration: "ca. 75 min",
     durationIsEstimate: true,
-    image: "biab-pastelgeel",
+    image: pickSharp("biab-pastelgeel", "biab-soft-french"),
     gallery: [
       "biab-naturel-kort",
       "biab-roze-gouden-ringen",
@@ -285,6 +291,9 @@ export type NailArtOption = {
   caption?: string;
 };
 
+/** Her chrome example, or a sharp Iced (parelmoer) set until it arrives full size. */
+const chromeImage = pickSharp("chrome-french", "biab-roze-parelmoer");
+
 export const nailArtOptions: NailArtOption[] = [
   {
     title: "Level 1",
@@ -307,9 +316,12 @@ export const nailArtOptions: NailArtOption[] = [
     price: "€ 3,00 hele set",
     description:
       "Chrome kan in verschillende kleuren gekozen worden, maar de populairste is ‘Iced’ met het parelmoereffect. Hiermee geef je nét die glimmende finishing touch waarmee elke kleur nog mooier uitkomt.",
-    image: "chrome-french",
+    image: chromeImage,
+    // Her description of her own photo — not shown over the stand-in.
     caption:
-      "Op de foto: BIAB met nail art level 1 (french), level 2 (gouden chrome met charms) en chrome over de hele set.",
+      chromeImage === "chrome-french"
+        ? "Op de foto: BIAB met nail art level 1 (french), level 2 (gouden chrome met charms) en chrome over de hele set."
+        : undefined,
   },
 ];
 

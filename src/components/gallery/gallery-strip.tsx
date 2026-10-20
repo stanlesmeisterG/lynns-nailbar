@@ -87,7 +87,10 @@ function StripRow({
               key={`${key}-${i}`}
               aria-hidden={copy || undefined}
               className={cn(
-                "w-[12rem] shrink-0 md:w-[16rem]",
+                // Sized for the ~300px files from Lynn's Word document, so a
+                // phone at 3x doesn't blow them up much past 1.7x. Once the
+                // originals are in, these can go back up to 12rem / 16rem.
+                "w-[10.5rem] shrink-0 md:w-[15rem]",
                 copy && "motion-reduce:hidden",
               )}
             >
@@ -107,7 +110,7 @@ function StripRow({
                     placeholder="blur"
                     blurDataURL={asset.blur}
                     loading="lazy"
-                    sizes="(max-width: 768px) 12rem, 16rem"
+                    sizes="(max-width: 768px) 10.5rem, 15rem"
                     className="size-full object-cover transition-transform duration-[900ms] ease-[var(--ease-soft)] group-hover/tile:scale-[1.05]"
                   />
                 </div>

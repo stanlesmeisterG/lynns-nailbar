@@ -51,6 +51,24 @@ export function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) 
     return () => window.removeEventListener("keydown", onKey);
   }, [open, go]);
 
+  // Horizontal swipe on touch screens. The gallery strip drifts and can't be
+  // dragged, so on a phone this viewer is how the sets are actually browsed —
+  // arrow buttons alone made that a game of precise tapping.
+  const touchStart = React.useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touchStart.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStart.current;
+    touchStart.current = null;
+    if (!start) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+  };
+
   const current = index !== null ? img(images[index]) : null;
 
   return (
@@ -99,7 +117,11 @@ export function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) 
                 </div>
 
                 {/* Image ---------------------------------------------------- */}
-                <div className="relative flex min-h-0 flex-1 items-center justify-center px-4 md:px-20">
+                <div
+                  className="relative flex min-h-0 flex-1 touch-pan-y items-center justify-center px-4 md:px-20"
+                  onTouchStart={onTouchStart}
+                  onTouchEnd={onTouchEnd}
+                >
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={images[index]}
@@ -121,6 +143,13 @@ export function Lightbox({ images, index, onClose, onNavigate }: LightboxProps) 
                         blurDataURL={current.blur}
                         sizes="(max-width: 768px) 92vw, 80vw"
                         className="max-h-full w-auto max-w-full rounded-lg object-contain"
+                        // Never stretched past 1.5x its own size: a small file
+                        // shown smaller looks sharp, blown up to fill a laptop
+                        // screen it looks broken. Full-size photos never hit it.
+                        style={{
+                          maxWidth: `min(100%, ${Math.round(current.width * 1.5)}px)`,
+                          maxHeight: `min(100%, ${Math.round(current.height * 1.5)}px)`,
+                        }}
                       />
                     </motion.div>
                   </AnimatePresence>
